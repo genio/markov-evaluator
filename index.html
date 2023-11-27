@@ -7,48 +7,57 @@
     <title>Markov Evaluator</title>
     <meta name="description" content="A simple Markov evaluator">
     <meta name="author" content="Chase Whitener">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/codemirror.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css" integrity="sha512-uf06llspW44/LZpHzHT6qBOIVODjWtv4MxCricRxkzvopAlSWnTf6hpZTFxuuZcuNE9CBQhqE0Seu1CoRk84nQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
         .CodeMirror {
             border: 1px solid #aaa;
+        }
+        .navbar {
+            margin-bottom: 15px;
         }
     </style>
 </head>
 <body>
 
 <div class="container-fluid">
-    <nav class="navbar navbar-default">
+    <nav class="navbar bg-body-tertiary">
         <div class="container-fluid">
-            <p class="navbar-text">Found an error? Open an <a href="https://github.com/genio/markov-evaluator/issues" target="_blank">issue</a> on GitHub.</p>
+            <span class="navbar-brand mb-0 h1">Found an error? Open an <a href="https://github.com/genio/markov-evaluator/issues" target="_blank">issue</a> on GitHub.</span>
         </div>
     </nav>
 
-    <div class="alert alert-info alert-dismissible" role="alert">
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      <strong>Some help!</strong> Use all upper case letters in the starting string.
-      <p>Upper case letters in patterns will be used for matching exact letters in
-      the starting string, lowercase letters will be treated as variables.</p>
-      <p>The characters @, #, $, %, &amp;, and * will be treated the same as greek letters.</p>
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <strong>Some help!</strong> Use all upper case letters in the starting string.
+        <p>Upper case letters in patterns will be used for matching exact letters in
+        the starting string, lowercase letters will be treated as variables.</p>
+        <p>The characters @, #, $, %, &amp;, and * will be treated the same as greek letters.</p>
     </div>
 
     <section id="therules">
         <div class="row">
             <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Rule Set:&nbsp;&nbsp; LHS -> RHS</div>
-                    <div class="panel-body">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Rule Set:&nbsp;&nbsp; LHS -> RHS</h5>
                         <textarea id="ruleset" cols="60" rows="5" class="form-control" spellcheck="false"></textarea>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Command Center</div>
-                    <div class="panel-body">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Command Center</h5>
                         <p>
-                            <button id="clear_results" type="button" class="btn btn-default">Clear Results</button>
+                            <button id="clear_results" type="button" class="btn btn-light">Clear Results</button>
                             <button id="execute_eval" type="button" class="btn btn-primary">Execute Evaluation</button>
                         </p>
                         <div class="form-group">
@@ -69,9 +78,9 @@
         uh oh
     </div>
 
-    <div class="panel panel-default">
-        <div id="results_show" class="panel-heading">Results</div>
-        <div class="panel-body">
+    <div class="card" style="margin-top: 1.5em;">
+        <div class="card-body">
+            <h5 id="results_show" class="card-title">Results</h5>
             <table id="results" class="table table-striped table-bordered table-hover table-condensed">
                 <thead>
                     <tr>
@@ -94,9 +103,9 @@
     </div>
 </div>
 
-<script src="js/jquery-3.1.1.min.js"></script>
-<script src="js/codemirror.js"></script>
-<script src="js/bootstrap.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js" integrity="sha512-8RnEqURPUc5aqFEN04aQEiPlSAdE0jlFS/9iGgUyNtwFnSKCXhmB6ZTNl7LnDtDWKabJIASzXrzD0K+LYexU9g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 <script src="js/markov.js"></script>
 </body>
 </html>

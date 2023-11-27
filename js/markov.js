@@ -1,7 +1,5 @@
-"use strict";
-
 // Rule class
-var Rule = function (line) {
+let Rule = function (line) {
     if (this instanceof Rule) {
         this._line = line.trim();
         this._lhs = '';
@@ -17,8 +15,8 @@ var Rule = function (line) {
     }
 
     this._create_rule = function() {
-        var left = this._lhs || '';
-        var right = this._rhs || '';
+        let left = this._lhs || '';
+        let right = this._rhs || '';
         if (left == '^' || /\^/.test(left)) {
             left = '';
             this.empty = true;
@@ -31,9 +29,9 @@ var Rule = function (line) {
         if (right == '^') right = '';
 
         if (!this.empty && left) {
-            var positions = {};
-            var cur_pos = 1;
-            var expression = '';
+            let positions = {};
+            let cur_pos = 1;
+            let expression = '';
             left.split("").forEach(function(cur_char, index) {
                 // are we dealing with a variable?
                 if (/^[a-z]$/.test(cur_char)) {
@@ -71,7 +69,7 @@ var Rule = function (line) {
             this.error = 'Rule is empty.';
             return false;
         }
-        var parts = this._line.match(/^(\S+)\s*[-=]>\s*(\S+)$/);
+        let parts = this._line.match(/^(\S+)\s*[-=]>\s*(\S+)$/);
         if (!Array.isArray(parts) || parts.length != 3) {
             this.error = "doesn't match X -> Y pattern";
             return false;
@@ -79,7 +77,7 @@ var Rule = function (line) {
         // left side will be just ^ if ^ appears anywhere
         if (/\^/.test(parts[1])) parts[1] = '^';
         // check RHS for variables not existing in LHS
-        var vars_exist = parts[2].split("").every(function (char, index) {
+        let vars_exist = parts[2].split("").every(function (char, index) {
             if (/^[a-z]$/.test(char)) {
                 return parts[1].indexOf(char) != -1;
             }
@@ -104,9 +102,9 @@ var Rule = function (line) {
     }
 };
 
-var error_msg; // error messages from attempting to validate rules
-var rule_set; // CodeMirror object
-var rules = []; // array of available rules
+let error_msg; // error messages from attempting to validate rules
+let rule_set; // CodeMirror object
+let rules = []; // array of available rules
 
 function attempt_run() {
     results_clear();
@@ -114,44 +112,44 @@ function attempt_run() {
         return false;
     }
 
-    var startString = $('#inputString').val();
+    let startString = document.querySelector('#inputString').value;
     if (!startString) {
         startString = '^';
-        $('#inputString').val('^');
+        document.querySelector('#inputString').value = '^';
     }
-    var endString = startString;
-    var limit = $('#maxIterations').val() || 100;
-    result_debug("Starting with: "+startString);
+    let endString = startString;
+    let limit = document.querySelector('#maxIterations').value ?? 100;
+    result_debug(`Starting with: ${startString}`);
 
     // end early due to no rules
     if (!Array.isArray(rules) || rules.length < 1) {
-        result_debug("No matching rules.");
-        result_debug("From: "+startString+" to "+endString);
+        result_debug('No matching rules.');
+        result_debug(`From: ${startString} to ${endString}`);
         return false;
     }
 
     // loop through
-    var iteration = 1;
-    while (iteration < limit+2) {
+    let iteration = 1;
+    while (iteration < limit + 2) {
         if (iteration > limit) {
-            result_debug("Too many iterations. Stopping.");
+            result_debug('Too many iterations. Stopping.');
             break;
         }
-        var done = false;
-        var rule_num = 0;
-        var rule_string = '';
-        var found = rules.some(function (rule, index) {
+        let done = false;
+        let rule_num = 0;
+        let rule_string = '';
+        let found = rules.some(function (rule, index) {
             if (!rule) return false;
             if (rule.empty) {
                 endString = rule.replacement + endString;
-                rule_num = index+1;
+                rule_num = index + 1;
                 rule_string = rule.toString();
                 if (rule.ending) done = true;
                 return true;
             }
             else if (rule.expression.test(endString)) {
                 endString = endString.replace(rule.expression, rule.replacement);
-                rule_num = index+1;
+                rule_num = index + 1;
                 rule_string = rule.toString();
                 if (rule.ending) done = true;
                 return true;
@@ -159,23 +157,27 @@ function attempt_run() {
             return false;
         });
         if (!found) {
-            result_debug("No matching rules.");
+            result_debug('No matching rules.');
             break;
         }
         result_add(iteration, endString, rule_num, rule_string);
         iteration++;
         if (done) break;
     }
-    result_debug("From: "+startString+" to "+endString);
+    result_debug(`From: ${startString} to ${endString}`);
     return true;
 }
 
 function errors_hide() {
-    $('#error_screen').html('').hide();
+    let elem = document.querySelector('#error_screen');
+    elem.innerHTML = '';
+    elem.style.display = 'none';
 }
 
 function errors_show(msg) {
-    $('#error_screen').html(msg).show();
+    let elem = document.querySelector('#error_screen');
+    elem.innerHTML = msg;
+    elem.style.display = 'block';
 }
 
 function is_greek(foo) {
@@ -189,25 +191,22 @@ function is_regex_meta(foo) {
 }
 
 function results_clear() {
-    $('#results > tbody').html('');
+    document.querySelector('#results > tbody').innerHTML = '';
+    console.log('Results cleared.');
 }
 
 function result_add(step, current, rule_num, rule) {
-    $('#results > tbody').append(
-        '<tr><td>' + step +
-        '</td><td>' + current +
-        '</td><td>' + rule_num +
-        '</td><td>' + rule +
-        "</td></tr>\n"
-    );
+    let elem = document.querySelector('#results > tbody');
+    elem.innerHTML = elem.innerHTML + `<tr><td>${step}</td><td>${current}</td><td>${rule_num}</td><td>${rule}</td></tr>\n`;
 }
 
 function result_debug(msg="") {
-    $('#results > tbody').append("<tr><td>&nbsp;</td><td>"+msg+"</td><td>&nbsp;</td><td>&nbsp</td></tr>\n")
+    let elem = document.querySelector('#results > tbody');
+    elem.innerHTML = elem.innerHTML + `<tr><td>&nbsp;</td><td>${msg}</td><td>&nbsp;</td><td>&nbsp</td></tr>\n`;
 }
 
 function rules_string() {
-    var string = '';
+    let string = '';
     rules.forEach(function(rule, index) {
         string += rule.toString() + "\n";
     });
@@ -219,15 +218,15 @@ function rules_validate(cm = null) {
     rules = [];
     error_msg = '';
     if (!cm) return false;
-    var val = cm.getValue("\n");
+    let val = cm.getValue("\n");
     if (!val) return false;
-    var lines = val.split("\n");
+    let lines = val.split("\n");
 
     if (!lines || !Array.isArray(lines)) return false;
     lines.forEach(function (line, index) {
         line = line.trim();
         if (!line) return;
-        var rule = new Rule(line);
+        let rule = new Rule(line);
         if (!rule.valid) {
             error_msg += '<p>Rule #' + (index+1) + " error: " + rule.error + "!</p>\n";
             return;
@@ -241,7 +240,7 @@ function rules_validate(cm = null) {
     return true;
 }
 
-$( document ).ready(function() {
+window.addEventListener('load', () => {
     results_clear();
     rule_set = CodeMirror.fromTextArea( document.getElementById("ruleset"), {
         lineNumbers: true,
@@ -251,38 +250,42 @@ $( document ).ready(function() {
     rule_set.setValue("@xy -> y@x\n@ -> ^.\n^ -> @");
     rule_set.on("blur", function(cm, change) {
         if (rules_validate(cm)) {
-            var lines = rules_string();
+            let lines = rules_string();
             if (lines != cm.getValue("\n")) {
                 cm.setValue(lines);
             }
         }
     });
 
-    $('#execute_eval').click(function () {
-        $('#execute_eval').disabled = true;
+    let execButton = document.getElementById('execute_eval');
+    execButton.addEventListener('click', async (event) => {
+        event.preventDefault();
+        execButton.disabled = true;
         attempt_run();
-        $('#execute_eval').disabled = false;
+        execButton.disabled = false;
     });
 
-    $('#clear_results').click(function () {
+    document.getElementById('clear_results').addEventListener('click', async (event) => {
         results_clear();
     });
 
-    $('#inputString').on("keyup blur change", function() {
-        var val = $('#inputString').val();
-        var upper = val.toUpperCase();
+    function setStringInputValue(event) {
+        let stringInput = document.getElementById('inputString');
+        let val = stringInput?.value ?? '';
+        let upper = val.toUpperCase();
         if (val === upper) return false;
-        $('#inputString').val(val.toUpperCase());
-    });
+        stringInput.value = upper;
+    }
+    let inputString = document.getElementById('inputString');
+    inputString.addEventListener('keyup', setStringInputValue, false);
+    inputString.addEventListener('blur', setStringInputValue, false);
+    inputString.addEventListener('change', setStringInputValue, false);
 
-    // get a floored INT value
-    $('#maxIterations').on("keyup blur change", function() {
-        var val = $('#maxIterations').val();
-        var clean = 1;
-        if (/^(?:\-|\+)?(?:[0-9.]+)$/.test(val))
-            clean = Math.floor(val);
-        if (clean < 1) clean = 1;
-        if (clean > 1000) clean = 1000;
-        $('#maxIterations').val(clean);
+    document.querySelector('#maxIterations').addEventListener('keypress', (event) => {
+        // Only ASCII character in that range allowed
+        let ASCIICode = (evt.which) ? evt.which : evt.keyCode
+        if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+            return false;
+        return true;
     });
 });
